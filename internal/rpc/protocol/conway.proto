@@ -1,0 +1,71 @@
+// E:\go\GolemCore\internal\rpc\protocol\conway.proto
+syntax = "proto3";
+package golem.rpc;
+
+option go_package = "GolemCore/internal/rpc/protocol";
+
+// 任务定义
+message ComputeTask {
+  string task_id = 1;
+  bytes grid_data = 2;       // 位图压缩数据
+  int32 generations = 3;     // 演化代数
+  BoundaryType boundary = 4; // 边界类型
+}
+
+// 计算结果
+message ComputeResult {
+  string task_id = 1;
+  bytes result_data = 2;    // 结果位图
+  double exec_time = 3;      // 执行时间(秒)
+}
+
+// 节点注册
+message WorkerRegistration {
+  string address = 1;        // 工作节点地址
+  int32 capacity = 2;        // 最大并行任务数
+}
+
+// 建议将服务拆分为两个清晰的接口
+//BrokerService 处理任务提交和节点注册
+service BrokerService {
+  rpc SubmitTask(ComputeTask) returns (TaskResponse);
+  rpc RegisterWorker(WorkerRegistration) returns (RegistrationResponse);
+}
+
+//ConwayService 专责计算逻辑
+service ConwayService {
+  rpc ComputeSync(ComputeTask) returns (ComputeResult);
+  rpc ComputeStream(stream ComputeTask) returns (stream ComputeResult);
+}
+
+// 新增消息类型
+message ComputeRequest {
+  bytes grid_data = 1;
+  int32 generations = 2;
+}
+
+message TaskResponse {
+  string task_id = 1;
+  int64 timestamp = 2;
+}
+
+// 辅助类型
+enum BoundaryType {
+  PERIODIC = 0;
+  FIXED = 1;
+  REFLECTIVE = 2;
+}
+
+message RegistrationResponse {
+  enum Status {
+    SUCCESS = 0;
+    FAILED = 1;
+  }
+  Status status = 1;
+  string assigned_id = 2;  // 确保proto定义使用下划线命名
+  int32 heartbeat_interval = 3;
+}
+
+message RegistrationRequest {
+  string address = 1;
+}
