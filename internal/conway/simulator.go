@@ -1,4 +1,3 @@
-// E:\go\GolemCore\internal\game\simulator.go
 package conway
 
 import (

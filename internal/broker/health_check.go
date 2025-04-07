@@ -1,4 +1,3 @@
-// health_check.go (补充文件)
 package broker
 
 import (

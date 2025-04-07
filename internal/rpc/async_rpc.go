@@ -1,4 +1,3 @@
-// E:\go\GolemCore\internal\rpc\async_rpc.go
 package rpc
 
 import (

@@ -1,4 +1,3 @@
-// E:\go\GolemCore\internal\broker\loadbalanceer.go
 package broker
 
 import (

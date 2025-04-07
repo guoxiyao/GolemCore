@@ -1,4 +1,3 @@
-// E:\go\GolemCore\internal\game\grid.go
 package game
 
 import (

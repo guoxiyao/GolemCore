@@ -1,4 +1,3 @@
-// E:\go\GolemCore\internal\rpc\clientpool.go
 package rpc
 
 import (

@@ -1,4 +1,3 @@
-// E:\go\GolemCore\internal\broker\broker.go
 package broker
 
 import (
