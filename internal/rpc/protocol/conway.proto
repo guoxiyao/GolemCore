@@ -7,7 +7,7 @@ option go_package = "GolemCore/internal/rpc/protocol";
 // 任务定义
 message ComputeTask {
   string task_id = 1;
-  bytes grid_data = 2;       // 位图压缩数据
+  bytes grid_data = 2;       // 网格数据
   int32 generations = 3;     // 演化代数
   BoundaryType boundary = 4; // 边界类型
   int64 timestamp = 5;
@@ -15,8 +15,8 @@ message ComputeTask {
 
 // 计算结果
 message ComputeResult {
-  string task_id = 1;
-  bytes result_data = 2;    // 结果位图
+  string task_id = 1;       //任务ID
+  bytes result_data = 2;    // 结果数据
   double exec_time = 3;      // 执行时间(秒)
 }
 
@@ -26,8 +26,7 @@ message WorkerRegistration {
   int32 capacity = 2;        // 最大并行任务数
 }
 
-// 建议将服务拆分为两个清晰的接口
-//BrokerService 处理任务提交和节点注册
+//BrokerService 任务调度
 service BrokerService {
   rpc SubmitTask(ComputeTask) returns (TaskResponse);
   rpc RegisterWorker(WorkerRegistration) returns (RegistrationResponse);
@@ -35,7 +34,7 @@ service BrokerService {
   rpc GetTaskStatus(TaskStatusRequest) returns (TaskStatusResponse); // 状态查询
 }
 
-//ConwayService 专责计算逻辑
+//ConwayService 计算服务
 service ConwayService {
   rpc ComputeSync(ComputeTask) returns (ComputeResult);
   rpc ComputeStream(stream ComputeTask) returns (stream ComputeResult);
@@ -92,4 +91,14 @@ message TaskStatusResponse {
     FAILED = 4;        // 补充FAILED状态
   }
   TaskStatus status = 1;
+  double exec_time = 2;  // 执行时间(秒)
+}
+
+// 节点同步协议
+message SyncNodesRequest {
+  repeated WorkerRegistration nodes = 1;
+}
+
+message SyncNodesResponse {
+  bool success = 1;
 }

@@ -4,12 +4,11 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v3.21.11
-// source: conway.proto
+// source: internal/rpc/protocol/conway.proto
 
 package protocol
 
 import (
-	"GolemCore/internal/broker"
 	context "context"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
@@ -32,8 +31,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
-// 建议将服务拆分为两个清晰的接口
-// BrokerService 处理任务提交和节点注册
+// BrokerService 任务调度
 type BrokerServiceClient interface {
 	SubmitTask(ctx context.Context, in *ComputeTask, opts ...grpc.CallOption) (*TaskResponse, error)
 	RegisterWorker(ctx context.Context, in *WorkerRegistration, opts ...grpc.CallOption) (*RegistrationResponse, error)
@@ -102,8 +100,7 @@ func (c *brokerServiceClient) GetTaskStatus(ctx context.Context, in *TaskStatusR
 // All implementations must embed UnimplementedBrokerServiceServer
 // for forward compatibility.
 //
-// 建议将服务拆分为两个清晰的接口
-// BrokerService 处理任务提交和节点注册
+// BrokerService 任务调度
 type BrokerServiceServer interface {
 	SubmitTask(context.Context, *ComputeTask) (*TaskResponse, error)
 	RegisterWorker(context.Context, *WorkerRegistration) (*RegistrationResponse, error)
@@ -141,7 +138,7 @@ type UnsafeBrokerServiceServer interface {
 	mustEmbedUnimplementedBrokerServiceServer()
 }
 
-func RegisterBrokerServiceServer(s grpc.ServiceRegistrar, srv *broker.BrokerService) {
+func RegisterBrokerServiceServer(s grpc.ServiceRegistrar, srv BrokerServiceServer) {
 	// If the following call pancis, it indicates UnimplementedBrokerServiceServer was
 	// embedded by pointer and is nil.  This will cause panics if an
 	// unimplemented method is ever invoked, so we test this at initialization
@@ -244,7 +241,7 @@ var BrokerService_ServiceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 	},
-	Metadata: "conway.proto",
+	Metadata: "internal/rpc/protocol/conway.proto",
 }
 
 const (
@@ -256,7 +253,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
-// ConwayService 专责计算逻辑
+// ConwayService 计算服务
 type ConwayServiceClient interface {
 	ComputeSync(ctx context.Context, in *ComputeTask, opts ...grpc.CallOption) (*ComputeResult, error)
 	ComputeStream(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[ComputeTask, ComputeResult], error)
@@ -297,7 +294,7 @@ type ConwayService_ComputeStreamClient = grpc.BidiStreamingClient[ComputeTask, C
 // All implementations must embed UnimplementedConwayServiceServer
 // for forward compatibility.
 //
-// ConwayService 专责计算逻辑
+// ConwayService 计算服务
 type ConwayServiceServer interface {
 	ComputeSync(context.Context, *ComputeTask) (*ComputeResult, error)
 	ComputeStream(grpc.BidiStreamingServer[ComputeTask, ComputeResult]) error
@@ -383,5 +380,5 @@ var ConwayService_ServiceDesc = grpc.ServiceDesc{
 			ClientStreams: true,
 		},
 	},
-	Metadata: "conway.proto",
+	Metadata: "internal/rpc/protocol/conway.proto",
 }

@@ -4,7 +4,7 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        v3.21.11
-// source: conway.proto
+// source: internal/rpc/protocol/conway.proto
 
 package protocol
 
@@ -57,11 +57,11 @@ func (x BoundaryType) String() string {
 }
 
 func (BoundaryType) Descriptor() protoreflect.EnumDescriptor {
-	return file_conway_proto_enumTypes[0].Descriptor()
+	return file_internal_rpc_protocol_conway_proto_enumTypes[0].Descriptor()
 }
 
 func (BoundaryType) Type() protoreflect.EnumType {
-	return &file_conway_proto_enumTypes[0]
+	return &file_internal_rpc_protocol_conway_proto_enumTypes[0]
 }
 
 func (x BoundaryType) Number() protoreflect.EnumNumber {
@@ -70,7 +70,7 @@ func (x BoundaryType) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use BoundaryType.Descriptor instead.
 func (BoundaryType) EnumDescriptor() ([]byte, []int) {
-	return file_conway_proto_rawDescGZIP(), []int{0}
+	return file_internal_rpc_protocol_conway_proto_rawDescGZIP(), []int{0}
 }
 
 type RegistrationResponse_Status int32
@@ -103,11 +103,11 @@ func (x RegistrationResponse_Status) String() string {
 }
 
 func (RegistrationResponse_Status) Descriptor() protoreflect.EnumDescriptor {
-	return file_conway_proto_enumTypes[1].Descriptor()
+	return file_internal_rpc_protocol_conway_proto_enumTypes[1].Descriptor()
 }
 
 func (RegistrationResponse_Status) Type() protoreflect.EnumType {
-	return &file_conway_proto_enumTypes[1]
+	return &file_internal_rpc_protocol_conway_proto_enumTypes[1]
 }
 
 func (x RegistrationResponse_Status) Number() protoreflect.EnumNumber {
@@ -116,7 +116,7 @@ func (x RegistrationResponse_Status) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use RegistrationResponse_Status.Descriptor instead.
 func (RegistrationResponse_Status) EnumDescriptor() ([]byte, []int) {
-	return file_conway_proto_rawDescGZIP(), []int{5, 0}
+	return file_internal_rpc_protocol_conway_proto_rawDescGZIP(), []int{5, 0}
 }
 
 type TaskStatusResponse_TaskStatus int32
@@ -158,11 +158,11 @@ func (x TaskStatusResponse_TaskStatus) String() string {
 }
 
 func (TaskStatusResponse_TaskStatus) Descriptor() protoreflect.EnumDescriptor {
-	return file_conway_proto_enumTypes[2].Descriptor()
+	return file_internal_rpc_protocol_conway_proto_enumTypes[2].Descriptor()
 }
 
 func (TaskStatusResponse_TaskStatus) Type() protoreflect.EnumType {
-	return &file_conway_proto_enumTypes[2]
+	return &file_internal_rpc_protocol_conway_proto_enumTypes[2]
 }
 
 func (x TaskStatusResponse_TaskStatus) Number() protoreflect.EnumNumber {
@@ -171,14 +171,14 @@ func (x TaskStatusResponse_TaskStatus) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use TaskStatusResponse_TaskStatus.Descriptor instead.
 func (TaskStatusResponse_TaskStatus) EnumDescriptor() ([]byte, []int) {
-	return file_conway_proto_rawDescGZIP(), []int{9, 0}
+	return file_internal_rpc_protocol_conway_proto_rawDescGZIP(), []int{9, 0}
 }
 
 // 任务定义
 type ComputeTask struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	TaskId        string                 `protobuf:"bytes,1,opt,name=task_id,json=taskId,proto3" json:"task_id,omitempty"`
-	GridData      []byte                 `protobuf:"bytes,2,opt,name=grid_data,json=gridData,proto3" json:"grid_data,omitempty"`              // 位图压缩数据
+	GridData      []byte                 `protobuf:"bytes,2,opt,name=grid_data,json=gridData,proto3" json:"grid_data,omitempty"`              // 网格数据
 	Generations   int32                  `protobuf:"varint,3,opt,name=generations,proto3" json:"generations,omitempty"`                       // 演化代数
 	Boundary      BoundaryType           `protobuf:"varint,4,opt,name=boundary,proto3,enum=golem.rpc.BoundaryType" json:"boundary,omitempty"` // 边界类型
 	Timestamp     int64                  `protobuf:"varint,5,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
@@ -188,7 +188,7 @@ type ComputeTask struct {
 
 func (x *ComputeTask) Reset() {
 	*x = ComputeTask{}
-	mi := &file_conway_proto_msgTypes[0]
+	mi := &file_internal_rpc_protocol_conway_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -200,7 +200,7 @@ func (x *ComputeTask) String() string {
 func (*ComputeTask) ProtoMessage() {}
 
 func (x *ComputeTask) ProtoReflect() protoreflect.Message {
-	mi := &file_conway_proto_msgTypes[0]
+	mi := &file_internal_rpc_protocol_conway_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -213,7 +213,7 @@ func (x *ComputeTask) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ComputeTask.ProtoReflect.Descriptor instead.
 func (*ComputeTask) Descriptor() ([]byte, []int) {
-	return file_conway_proto_rawDescGZIP(), []int{0}
+	return file_internal_rpc_protocol_conway_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *ComputeTask) GetTaskId() string {
@@ -254,8 +254,8 @@ func (x *ComputeTask) GetTimestamp() int64 {
 // 计算结果
 type ComputeResult struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	TaskId        string                 `protobuf:"bytes,1,opt,name=task_id,json=taskId,proto3" json:"task_id,omitempty"`
-	ResultData    []byte                 `protobuf:"bytes,2,opt,name=result_data,json=resultData,proto3" json:"result_data,omitempty"` // 结果位图
+	TaskId        string                 `protobuf:"bytes,1,opt,name=task_id,json=taskId,proto3" json:"task_id,omitempty"`             //任务ID
+	ResultData    []byte                 `protobuf:"bytes,2,opt,name=result_data,json=resultData,proto3" json:"result_data,omitempty"` // 结果数据
 	ExecTime      float64                `protobuf:"fixed64,3,opt,name=exec_time,json=execTime,proto3" json:"exec_time,omitempty"`     // 执行时间(秒)
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -263,7 +263,7 @@ type ComputeResult struct {
 
 func (x *ComputeResult) Reset() {
 	*x = ComputeResult{}
-	mi := &file_conway_proto_msgTypes[1]
+	mi := &file_internal_rpc_protocol_conway_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -275,7 +275,7 @@ func (x *ComputeResult) String() string {
 func (*ComputeResult) ProtoMessage() {}
 
 func (x *ComputeResult) ProtoReflect() protoreflect.Message {
-	mi := &file_conway_proto_msgTypes[1]
+	mi := &file_internal_rpc_protocol_conway_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -288,7 +288,7 @@ func (x *ComputeResult) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ComputeResult.ProtoReflect.Descriptor instead.
 func (*ComputeResult) Descriptor() ([]byte, []int) {
-	return file_conway_proto_rawDescGZIP(), []int{1}
+	return file_internal_rpc_protocol_conway_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *ComputeResult) GetTaskId() string {
@@ -323,7 +323,7 @@ type WorkerRegistration struct {
 
 func (x *WorkerRegistration) Reset() {
 	*x = WorkerRegistration{}
-	mi := &file_conway_proto_msgTypes[2]
+	mi := &file_internal_rpc_protocol_conway_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -335,7 +335,7 @@ func (x *WorkerRegistration) String() string {
 func (*WorkerRegistration) ProtoMessage() {}
 
 func (x *WorkerRegistration) ProtoReflect() protoreflect.Message {
-	mi := &file_conway_proto_msgTypes[2]
+	mi := &file_internal_rpc_protocol_conway_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -348,7 +348,7 @@ func (x *WorkerRegistration) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WorkerRegistration.ProtoReflect.Descriptor instead.
 func (*WorkerRegistration) Descriptor() ([]byte, []int) {
-	return file_conway_proto_rawDescGZIP(), []int{2}
+	return file_internal_rpc_protocol_conway_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *WorkerRegistration) GetAddress() string {
@@ -376,7 +376,7 @@ type ComputeRequest struct {
 
 func (x *ComputeRequest) Reset() {
 	*x = ComputeRequest{}
-	mi := &file_conway_proto_msgTypes[3]
+	mi := &file_internal_rpc_protocol_conway_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -388,7 +388,7 @@ func (x *ComputeRequest) String() string {
 func (*ComputeRequest) ProtoMessage() {}
 
 func (x *ComputeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_conway_proto_msgTypes[3]
+	mi := &file_internal_rpc_protocol_conway_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -401,7 +401,7 @@ func (x *ComputeRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ComputeRequest.ProtoReflect.Descriptor instead.
 func (*ComputeRequest) Descriptor() ([]byte, []int) {
-	return file_conway_proto_rawDescGZIP(), []int{3}
+	return file_internal_rpc_protocol_conway_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *ComputeRequest) GetGridData() []byte {
@@ -428,7 +428,7 @@ type TaskResponse struct {
 
 func (x *TaskResponse) Reset() {
 	*x = TaskResponse{}
-	mi := &file_conway_proto_msgTypes[4]
+	mi := &file_internal_rpc_protocol_conway_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -440,7 +440,7 @@ func (x *TaskResponse) String() string {
 func (*TaskResponse) ProtoMessage() {}
 
 func (x *TaskResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_conway_proto_msgTypes[4]
+	mi := &file_internal_rpc_protocol_conway_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -453,7 +453,7 @@ func (x *TaskResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TaskResponse.ProtoReflect.Descriptor instead.
 func (*TaskResponse) Descriptor() ([]byte, []int) {
-	return file_conway_proto_rawDescGZIP(), []int{4}
+	return file_internal_rpc_protocol_conway_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *TaskResponse) GetTaskId() string {
@@ -481,7 +481,7 @@ type RegistrationResponse struct {
 
 func (x *RegistrationResponse) Reset() {
 	*x = RegistrationResponse{}
-	mi := &file_conway_proto_msgTypes[5]
+	mi := &file_internal_rpc_protocol_conway_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -493,7 +493,7 @@ func (x *RegistrationResponse) String() string {
 func (*RegistrationResponse) ProtoMessage() {}
 
 func (x *RegistrationResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_conway_proto_msgTypes[5]
+	mi := &file_internal_rpc_protocol_conway_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -506,7 +506,7 @@ func (x *RegistrationResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RegistrationResponse.ProtoReflect.Descriptor instead.
 func (*RegistrationResponse) Descriptor() ([]byte, []int) {
-	return file_conway_proto_rawDescGZIP(), []int{5}
+	return file_internal_rpc_protocol_conway_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *RegistrationResponse) GetStatus() RegistrationResponse_Status {
@@ -539,7 +539,7 @@ type RegistrationRequest struct {
 
 func (x *RegistrationRequest) Reset() {
 	*x = RegistrationRequest{}
-	mi := &file_conway_proto_msgTypes[6]
+	mi := &file_internal_rpc_protocol_conway_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -551,7 +551,7 @@ func (x *RegistrationRequest) String() string {
 func (*RegistrationRequest) ProtoMessage() {}
 
 func (x *RegistrationRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_conway_proto_msgTypes[6]
+	mi := &file_internal_rpc_protocol_conway_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -564,7 +564,7 @@ func (x *RegistrationRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RegistrationRequest.ProtoReflect.Descriptor instead.
 func (*RegistrationRequest) Descriptor() ([]byte, []int) {
-	return file_conway_proto_rawDescGZIP(), []int{6}
+	return file_internal_rpc_protocol_conway_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *RegistrationRequest) GetAddress() string {
@@ -584,7 +584,7 @@ type StreamRequest struct {
 
 func (x *StreamRequest) Reset() {
 	*x = StreamRequest{}
-	mi := &file_conway_proto_msgTypes[7]
+	mi := &file_internal_rpc_protocol_conway_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -596,7 +596,7 @@ func (x *StreamRequest) String() string {
 func (*StreamRequest) ProtoMessage() {}
 
 func (x *StreamRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_conway_proto_msgTypes[7]
+	mi := &file_internal_rpc_protocol_conway_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -609,7 +609,7 @@ func (x *StreamRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StreamRequest.ProtoReflect.Descriptor instead.
 func (*StreamRequest) Descriptor() ([]byte, []int) {
-	return file_conway_proto_rawDescGZIP(), []int{7}
+	return file_internal_rpc_protocol_conway_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *StreamRequest) GetClientId() string {
@@ -629,7 +629,7 @@ type TaskStatusRequest struct {
 
 func (x *TaskStatusRequest) Reset() {
 	*x = TaskStatusRequest{}
-	mi := &file_conway_proto_msgTypes[8]
+	mi := &file_internal_rpc_protocol_conway_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -641,7 +641,7 @@ func (x *TaskStatusRequest) String() string {
 func (*TaskStatusRequest) ProtoMessage() {}
 
 func (x *TaskStatusRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_conway_proto_msgTypes[8]
+	mi := &file_internal_rpc_protocol_conway_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -654,7 +654,7 @@ func (x *TaskStatusRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TaskStatusRequest.ProtoReflect.Descriptor instead.
 func (*TaskStatusRequest) Descriptor() ([]byte, []int) {
-	return file_conway_proto_rawDescGZIP(), []int{8}
+	return file_internal_rpc_protocol_conway_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *TaskStatusRequest) GetTaskId() string {
@@ -673,7 +673,7 @@ type TaskStatusResponse struct {
 
 func (x *TaskStatusResponse) Reset() {
 	*x = TaskStatusResponse{}
-	mi := &file_conway_proto_msgTypes[9]
+	mi := &file_internal_rpc_protocol_conway_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -685,7 +685,7 @@ func (x *TaskStatusResponse) String() string {
 func (*TaskStatusResponse) ProtoMessage() {}
 
 func (x *TaskStatusResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_conway_proto_msgTypes[9]
+	mi := &file_internal_rpc_protocol_conway_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -698,7 +698,7 @@ func (x *TaskStatusResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TaskStatusResponse.ProtoReflect.Descriptor instead.
 func (*TaskStatusResponse) Descriptor() ([]byte, []int) {
-	return file_conway_proto_rawDescGZIP(), []int{9}
+	return file_internal_rpc_protocol_conway_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *TaskStatusResponse) GetStatus() TaskStatusResponse_TaskStatus {
@@ -708,11 +708,100 @@ func (x *TaskStatusResponse) GetStatus() TaskStatusResponse_TaskStatus {
 	return TaskStatusResponse_UNKNOWN
 }
 
-var File_conway_proto protoreflect.FileDescriptor
+// 节点同步协议
+type SyncNodesRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Nodes         []*WorkerRegistration  `protobuf:"bytes,1,rep,name=nodes,proto3" json:"nodes,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
 
-const file_conway_proto_rawDesc = "" +
+func (x *SyncNodesRequest) Reset() {
+	*x = SyncNodesRequest{}
+	mi := &file_internal_rpc_protocol_conway_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SyncNodesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SyncNodesRequest) ProtoMessage() {}
+
+func (x *SyncNodesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_internal_rpc_protocol_conway_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SyncNodesRequest.ProtoReflect.Descriptor instead.
+func (*SyncNodesRequest) Descriptor() ([]byte, []int) {
+	return file_internal_rpc_protocol_conway_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *SyncNodesRequest) GetNodes() []*WorkerRegistration {
+	if x != nil {
+		return x.Nodes
+	}
+	return nil
+}
+
+type SyncNodesResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SyncNodesResponse) Reset() {
+	*x = SyncNodesResponse{}
+	mi := &file_internal_rpc_protocol_conway_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SyncNodesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SyncNodesResponse) ProtoMessage() {}
+
+func (x *SyncNodesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_internal_rpc_protocol_conway_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SyncNodesResponse.ProtoReflect.Descriptor instead.
+func (*SyncNodesResponse) Descriptor() ([]byte, []int) {
+	return file_internal_rpc_protocol_conway_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *SyncNodesResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+var File_internal_rpc_protocol_conway_proto protoreflect.FileDescriptor
+
+const file_internal_rpc_protocol_conway_proto_rawDesc = "" +
 	"\n" +
-	"\fconway.proto\x12\tgolem.rpc\"\xb8\x01\n" +
+	"\"internal/rpc/protocol/conway.proto\x12\tgolem.rpc\"\xb8\x01\n" +
 	"\vComputeTask\x12\x17\n" +
 	"\atask_id\x18\x01 \x01(\tR\x06taskId\x12\x1b\n" +
 	"\tgrid_data\x18\x02 \x01(\fR\bgridData\x12 \n" +
@@ -758,7 +847,11 @@ const file_conway_proto_rawDesc = "" +
 	"PROCESSING\x10\x02\x12\r\n" +
 	"\tCOMPLETED\x10\x03\x12\n" +
 	"\n" +
-	"\x06FAILED\x10\x04*7\n" +
+	"\x06FAILED\x10\x04\"G\n" +
+	"\x10SyncNodesRequest\x123\n" +
+	"\x05nodes\x18\x01 \x03(\v2\x1d.golem.rpc.WorkerRegistrationR\x05nodes\"-\n" +
+	"\x11SyncNodesResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess*7\n" +
 	"\fBoundaryType\x12\f\n" +
 	"\bPERIODIC\x10\x00\x12\t\n" +
 	"\x05FIXED\x10\x01\x12\x0e\n" +
@@ -775,20 +868,20 @@ const file_conway_proto_rawDesc = "" +
 	"\rComputeStream\x12\x16.golem.rpc.ComputeTask\x1a\x18.golem.rpc.ComputeResult(\x010\x01B!Z\x1fGolemCore/internal/rpc/protocolb\x06proto3"
 
 var (
-	file_conway_proto_rawDescOnce sync.Once
-	file_conway_proto_rawDescData []byte
+	file_internal_rpc_protocol_conway_proto_rawDescOnce sync.Once
+	file_internal_rpc_protocol_conway_proto_rawDescData []byte
 )
 
-func file_conway_proto_rawDescGZIP() []byte {
-	file_conway_proto_rawDescOnce.Do(func() {
-		file_conway_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_conway_proto_rawDesc), len(file_conway_proto_rawDesc)))
+func file_internal_rpc_protocol_conway_proto_rawDescGZIP() []byte {
+	file_internal_rpc_protocol_conway_proto_rawDescOnce.Do(func() {
+		file_internal_rpc_protocol_conway_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_internal_rpc_protocol_conway_proto_rawDesc), len(file_internal_rpc_protocol_conway_proto_rawDesc)))
 	})
-	return file_conway_proto_rawDescData
+	return file_internal_rpc_protocol_conway_proto_rawDescData
 }
 
-var file_conway_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
-var file_conway_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
-var file_conway_proto_goTypes = []any{
+var file_internal_rpc_protocol_conway_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
+var file_internal_rpc_protocol_conway_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_internal_rpc_protocol_conway_proto_goTypes = []any{
 	(BoundaryType)(0),                  // 0: golem.rpc.BoundaryType
 	(RegistrationResponse_Status)(0),   // 1: golem.rpc.RegistrationResponse.Status
 	(TaskStatusResponse_TaskStatus)(0), // 2: golem.rpc.TaskStatusResponse.TaskStatus
@@ -802,51 +895,54 @@ var file_conway_proto_goTypes = []any{
 	(*StreamRequest)(nil),              // 10: golem.rpc.StreamRequest
 	(*TaskStatusRequest)(nil),          // 11: golem.rpc.TaskStatusRequest
 	(*TaskStatusResponse)(nil),         // 12: golem.rpc.TaskStatusResponse
+	(*SyncNodesRequest)(nil),           // 13: golem.rpc.SyncNodesRequest
+	(*SyncNodesResponse)(nil),          // 14: golem.rpc.SyncNodesResponse
 }
-var file_conway_proto_depIdxs = []int32{
+var file_internal_rpc_protocol_conway_proto_depIdxs = []int32{
 	0,  // 0: golem.rpc.ComputeTask.boundary:type_name -> golem.rpc.BoundaryType
 	1,  // 1: golem.rpc.RegistrationResponse.status:type_name -> golem.rpc.RegistrationResponse.Status
 	2,  // 2: golem.rpc.TaskStatusResponse.status:type_name -> golem.rpc.TaskStatusResponse.TaskStatus
-	3,  // 3: golem.rpc.BrokerService.SubmitTask:input_type -> golem.rpc.ComputeTask
-	5,  // 4: golem.rpc.BrokerService.RegisterWorker:input_type -> golem.rpc.WorkerRegistration
-	10, // 5: golem.rpc.BrokerService.StreamResults:input_type -> golem.rpc.StreamRequest
-	11, // 6: golem.rpc.BrokerService.GetTaskStatus:input_type -> golem.rpc.TaskStatusRequest
-	3,  // 7: golem.rpc.ConwayService.ComputeSync:input_type -> golem.rpc.ComputeTask
-	3,  // 8: golem.rpc.ConwayService.ComputeStream:input_type -> golem.rpc.ComputeTask
-	7,  // 9: golem.rpc.BrokerService.SubmitTask:output_type -> golem.rpc.TaskResponse
-	8,  // 10: golem.rpc.BrokerService.RegisterWorker:output_type -> golem.rpc.RegistrationResponse
-	4,  // 11: golem.rpc.BrokerService.StreamResults:output_type -> golem.rpc.ComputeResult
-	12, // 12: golem.rpc.BrokerService.GetTaskStatus:output_type -> golem.rpc.TaskStatusResponse
-	4,  // 13: golem.rpc.ConwayService.ComputeSync:output_type -> golem.rpc.ComputeResult
-	4,  // 14: golem.rpc.ConwayService.ComputeStream:output_type -> golem.rpc.ComputeResult
-	9,  // [9:15] is the sub-list for method output_type
-	3,  // [3:9] is the sub-list for method input_type
-	3,  // [3:3] is the sub-list for extension type_name
-	3,  // [3:3] is the sub-list for extension extendee
-	0,  // [0:3] is the sub-list for field type_name
+	5,  // 3: golem.rpc.SyncNodesRequest.nodes:type_name -> golem.rpc.WorkerRegistration
+	3,  // 4: golem.rpc.BrokerService.SubmitTask:input_type -> golem.rpc.ComputeTask
+	5,  // 5: golem.rpc.BrokerService.RegisterWorker:input_type -> golem.rpc.WorkerRegistration
+	10, // 6: golem.rpc.BrokerService.StreamResults:input_type -> golem.rpc.StreamRequest
+	11, // 7: golem.rpc.BrokerService.GetTaskStatus:input_type -> golem.rpc.TaskStatusRequest
+	3,  // 8: golem.rpc.ConwayService.ComputeSync:input_type -> golem.rpc.ComputeTask
+	3,  // 9: golem.rpc.ConwayService.ComputeStream:input_type -> golem.rpc.ComputeTask
+	7,  // 10: golem.rpc.BrokerService.SubmitTask:output_type -> golem.rpc.TaskResponse
+	8,  // 11: golem.rpc.BrokerService.RegisterWorker:output_type -> golem.rpc.RegistrationResponse
+	4,  // 12: golem.rpc.BrokerService.StreamResults:output_type -> golem.rpc.ComputeResult
+	12, // 13: golem.rpc.BrokerService.GetTaskStatus:output_type -> golem.rpc.TaskStatusResponse
+	4,  // 14: golem.rpc.ConwayService.ComputeSync:output_type -> golem.rpc.ComputeResult
+	4,  // 15: golem.rpc.ConwayService.ComputeStream:output_type -> golem.rpc.ComputeResult
+	10, // [10:16] is the sub-list for method output_type
+	4,  // [4:10] is the sub-list for method input_type
+	4,  // [4:4] is the sub-list for extension type_name
+	4,  // [4:4] is the sub-list for extension extendee
+	0,  // [0:4] is the sub-list for field type_name
 }
 
-func init() { file_conway_proto_init() }
-func file_conway_proto_init() {
-	if File_conway_proto != nil {
+func init() { file_internal_rpc_protocol_conway_proto_init() }
+func file_internal_rpc_protocol_conway_proto_init() {
+	if File_internal_rpc_protocol_conway_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_conway_proto_rawDesc), len(file_conway_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_internal_rpc_protocol_conway_proto_rawDesc), len(file_internal_rpc_protocol_conway_proto_rawDesc)),
 			NumEnums:      3,
-			NumMessages:   10,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   2,
 		},
-		GoTypes:           file_conway_proto_goTypes,
-		DependencyIndexes: file_conway_proto_depIdxs,
-		EnumInfos:         file_conway_proto_enumTypes,
-		MessageInfos:      file_conway_proto_msgTypes,
+		GoTypes:           file_internal_rpc_protocol_conway_proto_goTypes,
+		DependencyIndexes: file_internal_rpc_protocol_conway_proto_depIdxs,
+		EnumInfos:         file_internal_rpc_protocol_conway_proto_enumTypes,
+		MessageInfos:      file_internal_rpc_protocol_conway_proto_msgTypes,
 	}.Build()
-	File_conway_proto = out.File
-	file_conway_proto_goTypes = nil
-	file_conway_proto_depIdxs = nil
+	File_internal_rpc_protocol_conway_proto = out.File
+	file_internal_rpc_protocol_conway_proto_goTypes = nil
+	file_internal_rpc_protocol_conway_proto_depIdxs = nil
 }
