@@ -119,6 +119,61 @@ func (RegistrationResponse_Status) EnumDescriptor() ([]byte, []int) {
 	return file_conway_proto_rawDescGZIP(), []int{5, 0}
 }
 
+type TaskStatusResponse_TaskStatus int32
+
+const (
+	TaskStatusResponse_UNKNOWN    TaskStatusResponse_TaskStatus = 0
+	TaskStatusResponse_PENDING    TaskStatusResponse_TaskStatus = 1
+	TaskStatusResponse_PROCESSING TaskStatusResponse_TaskStatus = 2
+	TaskStatusResponse_COMPLETED  TaskStatusResponse_TaskStatus = 3
+	TaskStatusResponse_FAILED     TaskStatusResponse_TaskStatus = 4 // 补充FAILED状态
+)
+
+// Enum value maps for TaskStatusResponse_TaskStatus.
+var (
+	TaskStatusResponse_TaskStatus_name = map[int32]string{
+		0: "UNKNOWN",
+		1: "PENDING",
+		2: "PROCESSING",
+		3: "COMPLETED",
+		4: "FAILED",
+	}
+	TaskStatusResponse_TaskStatus_value = map[string]int32{
+		"UNKNOWN":    0,
+		"PENDING":    1,
+		"PROCESSING": 2,
+		"COMPLETED":  3,
+		"FAILED":     4,
+	}
+)
+
+func (x TaskStatusResponse_TaskStatus) Enum() *TaskStatusResponse_TaskStatus {
+	p := new(TaskStatusResponse_TaskStatus)
+	*p = x
+	return p
+}
+
+func (x TaskStatusResponse_TaskStatus) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (TaskStatusResponse_TaskStatus) Descriptor() protoreflect.EnumDescriptor {
+	return file_conway_proto_enumTypes[2].Descriptor()
+}
+
+func (TaskStatusResponse_TaskStatus) Type() protoreflect.EnumType {
+	return &file_conway_proto_enumTypes[2]
+}
+
+func (x TaskStatusResponse_TaskStatus) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use TaskStatusResponse_TaskStatus.Descriptor instead.
+func (TaskStatusResponse_TaskStatus) EnumDescriptor() ([]byte, []int) {
+	return file_conway_proto_rawDescGZIP(), []int{9, 0}
+}
+
 // 任务定义
 type ComputeTask struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -126,6 +181,7 @@ type ComputeTask struct {
 	GridData      []byte                 `protobuf:"bytes,2,opt,name=grid_data,json=gridData,proto3" json:"grid_data,omitempty"`              // 位图压缩数据
 	Generations   int32                  `protobuf:"varint,3,opt,name=generations,proto3" json:"generations,omitempty"`                       // 演化代数
 	Boundary      BoundaryType           `protobuf:"varint,4,opt,name=boundary,proto3,enum=golem.rpc.BoundaryType" json:"boundary,omitempty"` // 边界类型
+	Timestamp     int64                  `protobuf:"varint,5,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -186,6 +242,13 @@ func (x *ComputeTask) GetBoundary() BoundaryType {
 		return x.Boundary
 	}
 	return BoundaryType_PERIODIC
+}
+
+func (x *ComputeTask) GetTimestamp() int64 {
+	if x != nil {
+		return x.Timestamp
+	}
+	return 0
 }
 
 // 计算结果
@@ -511,16 +574,151 @@ func (x *RegistrationRequest) GetAddress() string {
 	return ""
 }
 
+// 新增流式结果请求协议
+type StreamRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ClientId      string                 `protobuf:"bytes,1,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"` // 修正字段名称为client_id
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *StreamRequest) Reset() {
+	*x = StreamRequest{}
+	mi := &file_conway_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *StreamRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StreamRequest) ProtoMessage() {}
+
+func (x *StreamRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_conway_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StreamRequest.ProtoReflect.Descriptor instead.
+func (*StreamRequest) Descriptor() ([]byte, []int) {
+	return file_conway_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *StreamRequest) GetClientId() string {
+	if x != nil {
+		return x.ClientId
+	}
+	return ""
+}
+
+// 任务状态查询协议
+type TaskStatusRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TaskId        string                 `protobuf:"bytes,1,opt,name=task_id,json=taskId,proto3" json:"task_id,omitempty"` // 修正字段名称为task_id
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TaskStatusRequest) Reset() {
+	*x = TaskStatusRequest{}
+	mi := &file_conway_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TaskStatusRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TaskStatusRequest) ProtoMessage() {}
+
+func (x *TaskStatusRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_conway_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TaskStatusRequest.ProtoReflect.Descriptor instead.
+func (*TaskStatusRequest) Descriptor() ([]byte, []int) {
+	return file_conway_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *TaskStatusRequest) GetTaskId() string {
+	if x != nil {
+		return x.TaskId
+	}
+	return ""
+}
+
+type TaskStatusResponse struct {
+	state         protoimpl.MessageState        `protogen:"open.v1"`
+	Status        TaskStatusResponse_TaskStatus `protobuf:"varint,1,opt,name=status,proto3,enum=golem.rpc.TaskStatusResponse_TaskStatus" json:"status,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TaskStatusResponse) Reset() {
+	*x = TaskStatusResponse{}
+	mi := &file_conway_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TaskStatusResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TaskStatusResponse) ProtoMessage() {}
+
+func (x *TaskStatusResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_conway_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TaskStatusResponse.ProtoReflect.Descriptor instead.
+func (*TaskStatusResponse) Descriptor() ([]byte, []int) {
+	return file_conway_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *TaskStatusResponse) GetStatus() TaskStatusResponse_TaskStatus {
+	if x != nil {
+		return x.Status
+	}
+	return TaskStatusResponse_UNKNOWN
+}
+
 var File_conway_proto protoreflect.FileDescriptor
 
 const file_conway_proto_rawDesc = "" +
 	"\n" +
-	"\fconway.proto\x12\tgolem.rpc\"\x9a\x01\n" +
+	"\fconway.proto\x12\tgolem.rpc\"\xb8\x01\n" +
 	"\vComputeTask\x12\x17\n" +
 	"\atask_id\x18\x01 \x01(\tR\x06taskId\x12\x1b\n" +
 	"\tgrid_data\x18\x02 \x01(\fR\bgridData\x12 \n" +
 	"\vgenerations\x18\x03 \x01(\x05R\vgenerations\x123\n" +
-	"\bboundary\x18\x04 \x01(\x0e2\x17.golem.rpc.BoundaryTypeR\bboundary\"f\n" +
+	"\bboundary\x18\x04 \x01(\x0e2\x17.golem.rpc.BoundaryTypeR\bboundary\x12\x1c\n" +
+	"\ttimestamp\x18\x05 \x01(\x03R\ttimestamp\"f\n" +
 	"\rComputeResult\x12\x17\n" +
 	"\atask_id\x18\x01 \x01(\tR\x06taskId\x12\x1f\n" +
 	"\vresult_data\x18\x02 \x01(\fR\n" +
@@ -545,16 +743,33 @@ const file_conway_proto_rawDesc = "" +
 	"\n" +
 	"\x06FAILED\x10\x01\"/\n" +
 	"\x13RegistrationRequest\x12\x18\n" +
-	"\aaddress\x18\x01 \x01(\tR\aaddress*7\n" +
+	"\aaddress\x18\x01 \x01(\tR\aaddress\",\n" +
+	"\rStreamRequest\x12\x1b\n" +
+	"\tclient_id\x18\x01 \x01(\tR\bclientId\",\n" +
+	"\x11TaskStatusRequest\x12\x17\n" +
+	"\atask_id\x18\x01 \x01(\tR\x06taskId\"\xa9\x01\n" +
+	"\x12TaskStatusResponse\x12@\n" +
+	"\x06status\x18\x01 \x01(\x0e2(.golem.rpc.TaskStatusResponse.TaskStatusR\x06status\"Q\n" +
+	"\n" +
+	"TaskStatus\x12\v\n" +
+	"\aUNKNOWN\x10\x00\x12\v\n" +
+	"\aPENDING\x10\x01\x12\x0e\n" +
+	"\n" +
+	"PROCESSING\x10\x02\x12\r\n" +
+	"\tCOMPLETED\x10\x03\x12\n" +
+	"\n" +
+	"\x06FAILED\x10\x04*7\n" +
 	"\fBoundaryType\x12\f\n" +
 	"\bPERIODIC\x10\x00\x12\t\n" +
 	"\x05FIXED\x10\x01\x12\x0e\n" +
 	"\n" +
-	"REFLECTIVE\x10\x022\xa0\x01\n" +
+	"REFLECTIVE\x10\x022\xb5\x02\n" +
 	"\rBrokerService\x12=\n" +
 	"\n" +
 	"SubmitTask\x12\x16.golem.rpc.ComputeTask\x1a\x17.golem.rpc.TaskResponse\x12P\n" +
-	"\x0eRegisterWorker\x12\x1d.golem.rpc.WorkerRegistration\x1a\x1f.golem.rpc.RegistrationResponse2\x97\x01\n" +
+	"\x0eRegisterWorker\x12\x1d.golem.rpc.WorkerRegistration\x1a\x1f.golem.rpc.RegistrationResponse\x12E\n" +
+	"\rStreamResults\x12\x18.golem.rpc.StreamRequest\x1a\x18.golem.rpc.ComputeResult0\x01\x12L\n" +
+	"\rGetTaskStatus\x12\x1c.golem.rpc.TaskStatusRequest\x1a\x1d.golem.rpc.TaskStatusResponse2\x97\x01\n" +
 	"\rConwayService\x12?\n" +
 	"\vComputeSync\x12\x16.golem.rpc.ComputeTask\x1a\x18.golem.rpc.ComputeResult\x12E\n" +
 	"\rComputeStream\x12\x16.golem.rpc.ComputeTask\x1a\x18.golem.rpc.ComputeResult(\x010\x01B!Z\x1fGolemCore/internal/rpc/protocolb\x06proto3"
@@ -571,35 +786,44 @@ func file_conway_proto_rawDescGZIP() []byte {
 	return file_conway_proto_rawDescData
 }
 
-var file_conway_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_conway_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_conway_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
+var file_conway_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_conway_proto_goTypes = []any{
-	(BoundaryType)(0),                // 0: golem.rpc.BoundaryType
-	(RegistrationResponse_Status)(0), // 1: golem.rpc.RegistrationResponse.Status
-	(*ComputeTask)(nil),              // 2: golem.rpc.ComputeTask
-	(*ComputeResult)(nil),            // 3: golem.rpc.ComputeResult
-	(*WorkerRegistration)(nil),       // 4: golem.rpc.WorkerRegistration
-	(*ComputeRequest)(nil),           // 5: golem.rpc.ComputeRequest
-	(*TaskResponse)(nil),             // 6: golem.rpc.TaskResponse
-	(*RegistrationResponse)(nil),     // 7: golem.rpc.RegistrationResponse
-	(*RegistrationRequest)(nil),      // 8: golem.rpc.RegistrationRequest
+	(BoundaryType)(0),                  // 0: golem.rpc.BoundaryType
+	(RegistrationResponse_Status)(0),   // 1: golem.rpc.RegistrationResponse.Status
+	(TaskStatusResponse_TaskStatus)(0), // 2: golem.rpc.TaskStatusResponse.TaskStatus
+	(*ComputeTask)(nil),                // 3: golem.rpc.ComputeTask
+	(*ComputeResult)(nil),              // 4: golem.rpc.ComputeResult
+	(*WorkerRegistration)(nil),         // 5: golem.rpc.WorkerRegistration
+	(*ComputeRequest)(nil),             // 6: golem.rpc.ComputeRequest
+	(*TaskResponse)(nil),               // 7: golem.rpc.TaskResponse
+	(*RegistrationResponse)(nil),       // 8: golem.rpc.RegistrationResponse
+	(*RegistrationRequest)(nil),        // 9: golem.rpc.RegistrationRequest
+	(*StreamRequest)(nil),              // 10: golem.rpc.StreamRequest
+	(*TaskStatusRequest)(nil),          // 11: golem.rpc.TaskStatusRequest
+	(*TaskStatusResponse)(nil),         // 12: golem.rpc.TaskStatusResponse
 }
 var file_conway_proto_depIdxs = []int32{
-	0, // 0: golem.rpc.ComputeTask.boundary:type_name -> golem.rpc.BoundaryType
-	1, // 1: golem.rpc.RegistrationResponse.status:type_name -> golem.rpc.RegistrationResponse.Status
-	2, // 2: golem.rpc.BrokerService.SubmitTask:input_type -> golem.rpc.ComputeTask
-	4, // 3: golem.rpc.BrokerService.RegisterWorker:input_type -> golem.rpc.WorkerRegistration
-	2, // 4: golem.rpc.ConwayService.ComputeSync:input_type -> golem.rpc.ComputeTask
-	2, // 5: golem.rpc.ConwayService.ComputeStream:input_type -> golem.rpc.ComputeTask
-	6, // 6: golem.rpc.BrokerService.SubmitTask:output_type -> golem.rpc.TaskResponse
-	7, // 7: golem.rpc.BrokerService.RegisterWorker:output_type -> golem.rpc.RegistrationResponse
-	3, // 8: golem.rpc.ConwayService.ComputeSync:output_type -> golem.rpc.ComputeResult
-	3, // 9: golem.rpc.ConwayService.ComputeStream:output_type -> golem.rpc.ComputeResult
-	6, // [6:10] is the sub-list for method output_type
-	2, // [2:6] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	0,  // 0: golem.rpc.ComputeTask.boundary:type_name -> golem.rpc.BoundaryType
+	1,  // 1: golem.rpc.RegistrationResponse.status:type_name -> golem.rpc.RegistrationResponse.Status
+	2,  // 2: golem.rpc.TaskStatusResponse.status:type_name -> golem.rpc.TaskStatusResponse.TaskStatus
+	3,  // 3: golem.rpc.BrokerService.SubmitTask:input_type -> golem.rpc.ComputeTask
+	5,  // 4: golem.rpc.BrokerService.RegisterWorker:input_type -> golem.rpc.WorkerRegistration
+	10, // 5: golem.rpc.BrokerService.StreamResults:input_type -> golem.rpc.StreamRequest
+	11, // 6: golem.rpc.BrokerService.GetTaskStatus:input_type -> golem.rpc.TaskStatusRequest
+	3,  // 7: golem.rpc.ConwayService.ComputeSync:input_type -> golem.rpc.ComputeTask
+	3,  // 8: golem.rpc.ConwayService.ComputeStream:input_type -> golem.rpc.ComputeTask
+	7,  // 9: golem.rpc.BrokerService.SubmitTask:output_type -> golem.rpc.TaskResponse
+	8,  // 10: golem.rpc.BrokerService.RegisterWorker:output_type -> golem.rpc.RegistrationResponse
+	4,  // 11: golem.rpc.BrokerService.StreamResults:output_type -> golem.rpc.ComputeResult
+	12, // 12: golem.rpc.BrokerService.GetTaskStatus:output_type -> golem.rpc.TaskStatusResponse
+	4,  // 13: golem.rpc.ConwayService.ComputeSync:output_type -> golem.rpc.ComputeResult
+	4,  // 14: golem.rpc.ConwayService.ComputeStream:output_type -> golem.rpc.ComputeResult
+	9,  // [9:15] is the sub-list for method output_type
+	3,  // [3:9] is the sub-list for method input_type
+	3,  // [3:3] is the sub-list for extension type_name
+	3,  // [3:3] is the sub-list for extension extendee
+	0,  // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_conway_proto_init() }
@@ -612,8 +836,8 @@ func file_conway_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_conway_proto_rawDesc), len(file_conway_proto_rawDesc)),
-			NumEnums:      2,
-			NumMessages:   7,
+			NumEnums:      3,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   2,
 		},

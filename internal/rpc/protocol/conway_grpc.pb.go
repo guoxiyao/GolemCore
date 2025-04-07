@@ -9,6 +9,7 @@
 package protocol
 
 import (
+	"GolemCore/internal/broker"
 	context "context"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
@@ -23,6 +24,8 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	BrokerService_SubmitTask_FullMethodName     = "/golem.rpc.BrokerService/SubmitTask"
 	BrokerService_RegisterWorker_FullMethodName = "/golem.rpc.BrokerService/RegisterWorker"
+	BrokerService_StreamResults_FullMethodName  = "/golem.rpc.BrokerService/StreamResults"
+	BrokerService_GetTaskStatus_FullMethodName  = "/golem.rpc.BrokerService/GetTaskStatus"
 )
 
 // BrokerServiceClient is the client API for BrokerService service.
@@ -34,6 +37,8 @@ const (
 type BrokerServiceClient interface {
 	SubmitTask(ctx context.Context, in *ComputeTask, opts ...grpc.CallOption) (*TaskResponse, error)
 	RegisterWorker(ctx context.Context, in *WorkerRegistration, opts ...grpc.CallOption) (*RegistrationResponse, error)
+	StreamResults(ctx context.Context, in *StreamRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[ComputeResult], error)
+	GetTaskStatus(ctx context.Context, in *TaskStatusRequest, opts ...grpc.CallOption) (*TaskStatusResponse, error)
 }
 
 type brokerServiceClient struct {
@@ -64,6 +69,35 @@ func (c *brokerServiceClient) RegisterWorker(ctx context.Context, in *WorkerRegi
 	return out, nil
 }
 
+func (c *brokerServiceClient) StreamResults(ctx context.Context, in *StreamRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[ComputeResult], error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &BrokerService_ServiceDesc.Streams[0], BrokerService_StreamResults_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[StreamRequest, ComputeResult]{ClientStream: stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type BrokerService_StreamResultsClient = grpc.ServerStreamingClient[ComputeResult]
+
+func (c *brokerServiceClient) GetTaskStatus(ctx context.Context, in *TaskStatusRequest, opts ...grpc.CallOption) (*TaskStatusResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(TaskStatusResponse)
+	err := c.cc.Invoke(ctx, BrokerService_GetTaskStatus_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BrokerServiceServer is the server API for BrokerService service.
 // All implementations must embed UnimplementedBrokerServiceServer
 // for forward compatibility.
@@ -73,6 +107,8 @@ func (c *brokerServiceClient) RegisterWorker(ctx context.Context, in *WorkerRegi
 type BrokerServiceServer interface {
 	SubmitTask(context.Context, *ComputeTask) (*TaskResponse, error)
 	RegisterWorker(context.Context, *WorkerRegistration) (*RegistrationResponse, error)
+	StreamResults(*StreamRequest, grpc.ServerStreamingServer[ComputeResult]) error
+	GetTaskStatus(context.Context, *TaskStatusRequest) (*TaskStatusResponse, error)
 	mustEmbedUnimplementedBrokerServiceServer()
 }
 
@@ -89,6 +125,12 @@ func (UnimplementedBrokerServiceServer) SubmitTask(context.Context, *ComputeTask
 func (UnimplementedBrokerServiceServer) RegisterWorker(context.Context, *WorkerRegistration) (*RegistrationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterWorker not implemented")
 }
+func (UnimplementedBrokerServiceServer) StreamResults(*StreamRequest, grpc.ServerStreamingServer[ComputeResult]) error {
+	return status.Errorf(codes.Unimplemented, "method StreamResults not implemented")
+}
+func (UnimplementedBrokerServiceServer) GetTaskStatus(context.Context, *TaskStatusRequest) (*TaskStatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTaskStatus not implemented")
+}
 func (UnimplementedBrokerServiceServer) mustEmbedUnimplementedBrokerServiceServer() {}
 func (UnimplementedBrokerServiceServer) testEmbeddedByValue()                       {}
 
@@ -99,7 +141,7 @@ type UnsafeBrokerServiceServer interface {
 	mustEmbedUnimplementedBrokerServiceServer()
 }
 
-func RegisterBrokerServiceServer(s grpc.ServiceRegistrar, srv BrokerServiceServer) {
+func RegisterBrokerServiceServer(s grpc.ServiceRegistrar, srv *broker.BrokerService) {
 	// If the following call pancis, it indicates UnimplementedBrokerServiceServer was
 	// embedded by pointer and is nil.  This will cause panics if an
 	// unimplemented method is ever invoked, so we test this at initialization
@@ -146,6 +188,35 @@ func _BrokerService_RegisterWorker_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BrokerService_StreamResults_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(StreamRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(BrokerServiceServer).StreamResults(m, &grpc.GenericServerStream[StreamRequest, ComputeResult]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type BrokerService_StreamResultsServer = grpc.ServerStreamingServer[ComputeResult]
+
+func _BrokerService_GetTaskStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TaskStatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BrokerServiceServer).GetTaskStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BrokerService_GetTaskStatus_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BrokerServiceServer).GetTaskStatus(ctx, req.(*TaskStatusRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BrokerService_ServiceDesc is the grpc.ServiceDesc for BrokerService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -161,8 +232,18 @@ var BrokerService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "RegisterWorker",
 			Handler:    _BrokerService_RegisterWorker_Handler,
 		},
+		{
+			MethodName: "GetTaskStatus",
+			Handler:    _BrokerService_GetTaskStatus_Handler,
+		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "StreamResults",
+			Handler:       _BrokerService_StreamResults_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "conway.proto",
 }
 

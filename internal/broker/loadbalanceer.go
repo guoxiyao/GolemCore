@@ -75,3 +75,50 @@ func (w *WeightedRoundRobin) SelectNode(task *protocol.ComputeTask) string {
 	}
 	return w.nodes[0]
 }
+
+// 添加最少连接负载均衡器
+type LeastConnLB struct {
+	mu    sync.Mutex
+	nodes map[string]int // 节点地址 -> 当前连接数
+}
+
+func NewLeastConnLB() *LeastConnLB {
+	return &LeastConnLB{
+		nodes: make(map[string]int),
+	}
+}
+
+func (l *LeastConnLB) AddNode(addr string) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	l.nodes[addr] = 0
+}
+
+func (l *LeastConnLB) RemoveNode(addr string) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	delete(l.nodes, addr)
+}
+
+func (l *LeastConnLB) SelectNode(task *protocol.ComputeTask) string {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
+	if len(l.nodes) == 0 {
+		return ""
+	}
+
+	// 找到连接数最少的节点
+	min := int(^uint(0) >> 1)
+	var selected string
+	for addr, conn := range l.nodes {
+		if conn < min {
+			min = conn
+			selected = addr
+		}
+	}
+	if selected != "" {
+		l.nodes[selected]++
+	}
+	return selected
+}

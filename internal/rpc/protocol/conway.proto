@@ -10,6 +10,7 @@ message ComputeTask {
   bytes grid_data = 2;       // 位图压缩数据
   int32 generations = 3;     // 演化代数
   BoundaryType boundary = 4; // 边界类型
+  int64 timestamp = 5;
 }
 
 // 计算结果
@@ -30,6 +31,8 @@ message WorkerRegistration {
 service BrokerService {
   rpc SubmitTask(ComputeTask) returns (TaskResponse);
   rpc RegisterWorker(WorkerRegistration) returns (RegistrationResponse);
+  rpc StreamResults(StreamRequest) returns (stream ComputeResult); // 流式接口
+  rpc GetTaskStatus(TaskStatusRequest) returns (TaskStatusResponse); // 状态查询
 }
 
 //ConwayService 专责计算逻辑
@@ -68,4 +71,25 @@ message RegistrationResponse {
 
 message RegistrationRequest {
   string address = 1;
+}
+
+// 新增流式结果请求协议
+message StreamRequest {
+  string client_id = 1; // 修正字段名称为client_id
+}
+
+// 任务状态查询协议
+message TaskStatusRequest {
+  string task_id = 1; // 修正字段名称为task_id
+}
+
+message TaskStatusResponse {
+  enum TaskStatus {
+    UNKNOWN = 0;
+    PENDING = 1;
+    PROCESSING = 2;
+    COMPLETED = 3;
+    FAILED = 4;        // 补充FAILED状态
+  }
+  TaskStatus status = 1;
 }
